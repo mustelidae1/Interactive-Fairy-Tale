@@ -1,15 +1,15 @@
-const fs = require("fs") 
-const bodyParser = require("body-parser")
-const express = require('express')
+const fs = require("fs");
+const bodyParser = require("body-parser");
+const express = require('express');
 const cheerio = require("cheerio");
 
-const app = express() // Setting up web server 
-const port = 3000
+const app = express(); // Set up web server 
+const port = 3000;
 
-const jsonFile = "./passages.json"
-const htmlFile = "./public/index.html"
+const jsonFile = "./passages.json";
+const htmlFile = "./public/index.html";
 
-app.use(express.static('public')) // Identify the directory of the Twine 
+app.use(express.static('public')); // Identify the directory of the Twine so we can serve it statically 
 
 app.use(bodyParser.urlencoded({ extended: false })); // Settings so we can read JSON 
 app.use(bodyParser.json());
@@ -18,8 +18,8 @@ app.get('/', (req, res) => { // Display the Twine at the main server address
     res.send(""); 
 });
 
-app.post('/newOption', (req, res) => { // Add a new option  
-    console.log(req.body)
+app.post('/newOption', (req, res) => { // Add a new passage to the story 
+    console.log("Adding new passage: ", req.body)
 
     var newOption = {
         "title": req.body.title,  
@@ -33,40 +33,36 @@ app.post('/newOption', (req, res) => { // Add a new option
 }); 
 
 app.listen(port,() => { // Start the web server 
-    console.log(`App running on port ${port}`)
+    console.log(`App running on port ${port}`);
 })
 
-
-function setupHTML() { 
+// Helper Functions -------------------------------------------
+function setupHTML() { // Add passages from the JSON storage to the HTML so they will be displayed in the Twine 
     fs.readFile(jsonFile, "utf8", (err, jsonString) => { 
         if (err) {
           console.log("JSON file read failed:", err);
           return;
         }
         try {
-            const newOptions = JSON.parse(jsonString).data;
+            const newOptions = JSON.parse(jsonString).data; // Get the stored passages from the JSON object 
 
-            fs.readFile(htmlFile, function(err, data) {
-                const $ = cheerio.load(data);
-                passages = $("tw-passagedata"); 
-                storyData = $("tw-storydata"); 
-                numPassages = passages.length; 
+            fs.readFile(htmlFile, function(err, data) { // Read the HTML file 
+                const $ = cheerio.load(data); 
+                passages = $("tw-passagedata"); // Find existing passages  
+                storyData = $("tw-storydata");  // Find the top-level node that all the passages are children of 
+                numPassages = passages.length; // Get the number of passages 
 
                 newOptions.forEach(o => {
-                    //only add if the passage is not already in the html 
+                    //check if the passage is already in the HTML 
                     if ($(`tw-passagedata[name="${o.title}"]`).length == 0) {
-                        console.log("GOT HERE"); 
                         // Add the passage to the HTML 
-                        console.log("JSON: ", o, o.title, o.text, o.after)
-                        var str = `<tw-passagedata pid="${++numPassages}" name="${o.title}" tags="custom" position="775,450" size="100,100">${o.text}\n\n [[Next|${o.after}]] </tw-passagedata>`
-                        storyData.append(str) // append adds it inside, which we do not want. We want it after 
-                        //console.log(passages)
+                        var str = `<tw-passagedata pid="${++numPassages}" name="${o.title}" tags="custom" position="775,450" size="100,100">${o.text}\n\n [[Next|${o.after}]] </tw-passagedata>`; 
+                        storyData.append(str); 
 
-                        // Add a link for the new passage to the previous passage 
-                        prevPassage = $(`tw-passagedata[name="${o.before}"]`)
-                        prevPassageText = prevPassage.text() 
-                        prevPassage.text(prevPassageText + `[[${o.title}]]\n`)
-                        console.log("PREV TEXT: ", prevPassage.text())
+                        // Add a link to the new passage in the previous passage 
+                        prevPassage = $(`tw-passagedata[name="${o.before}"]`); 
+                        prevPassageText = prevPassage.text(); 
+                        prevPassage.text(prevPassageText + `[[${o.title}]]\n`);
                     }
                 })
 
@@ -74,11 +70,11 @@ function setupHTML() {
                 var newFile = $.html() 
                 fs.writeFile(htmlFile, newFile, err => {
                     if (err) {
-                        console.log('Error writing HTML file', err)
+                        console.log('Error writing HTML file', err);
                     } else {
-                        console.log('Successfully wrote HTML file')
+                        console.log('Successfully wrote HTML file');
                     }
-                })
+                }); 
             });
 
           } catch (err) {
@@ -87,25 +83,23 @@ function setupHTML() {
       });
 }
 
-function addtoJSON(newOption) {
-    fs.readFile(jsonFile, "utf8", (err, jsonString) => {
+function addtoJSON(newOption) { // add a new passage to the JSON storage 
+    fs.readFile(jsonFile, "utf8", (err, jsonString) => { // read the JSON file 
         if (err) {
           console.log("JSON file read failed:", err);
           return;
         }
-        console.log("JSON File data:", jsonString);
         try {
-            const options = JSON.parse(jsonString);
-            //console.log("JSON", options.data); 
-            options.data.push(newOption); 
+            const options = JSON.parse(jsonString); // Parse the JSON file 
+            options.data.push(newOption); // Add the new passage 
             const newFile = JSON.stringify(options); 
-            fs.writeFile(jsonFile, newFile, err => {
+            fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
                 if (err) {
-                    console.log('Error writing JSON file', err)
+                    console.log('Error writing JSON file', err);
                 } else {
-                    console.log('Successfully wrote JSON file')
+                    console.log('Successfully wrote JSON file');
                 }
-                setupHTML()
+                setupHTML(); // Update the HTML with the new passage
             })
           } catch (err) {
             console.log("Error parsing JSON string:", err);
@@ -120,4 +114,4 @@ function addtoJSON(newOption) {
     "before": "Beginning of the Story", 
     "after": "End of the Story"  
 })*/
-setupHTML()
+setupHTML(); 

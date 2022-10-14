@@ -2,6 +2,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const express = require('express');
 const cheerio = require("cheerio");
+const { allowedNodeEnvironmentFlags } = require("process");
 
 const app = express(); // Set up web server 
 const port = 3000;
@@ -30,7 +31,24 @@ app.post('/newOption', (req, res) => { // Add a new passage to the story
     
     // add option to the JSON object 
     addtoJSON(newOption); 
+
+    res.end(); 
 }); 
+
+app.post('/newVar', (req, res) => { // Add a new variable option to the story 
+    console.log("Adding new var: ", req.body) 
+
+    var newVar = {
+        "name": req.body.name, 
+        "value": req.body.value,
+        "pageSet": req.body.pageSet, // the Twine page on which the var is set 
+        "nextPage": req.body.nextPage
+    }
+
+    addVar(newVar); 
+
+    res.end(); 
+})
 
 app.listen(port,() => { // Start the web server 
     console.log(`App running on port ${port}`);
@@ -44,7 +62,9 @@ function setupHTML() { // Add passages from the JSON storage to the HTML so they
           return;
         }
         try {
-            const newOptions = JSON.parse(jsonString).data; // Get the stored passages from the JSON object 
+            const parsedJSON = JSON.parse(jsonString); 
+            const newOptions = parsedJSON.data; // Get the stored passages from the JSON object 
+            const varOptions = parsedJSON.vars; // Get the stored vars from the JSON object 
 
             fs.readFile(htmlFile, function(err, data) { // Read the HTML file 
                 const $ = cheerio.load(data); 
@@ -65,6 +85,19 @@ function setupHTML() { // Add passages from the JSON storage to the HTML so they
                         prevPassage.text(prevPassageText + `[[${o.title}]]\n`);
                     }
                 })
+
+                // Add links for all of the user variables 
+                // for each variable, find the page where that variable is an option and then add a link 
+                varOptions.forEach(o => {
+                    //find the passage to add a link to 
+                    passage = $(`tw-passagedata[name="${o.pageSet}"]`); 
+
+                    // check if the option is already on the page
+                    passageText = passage.text();  
+                    if (!passageText.includes(o.value)) {
+                        passage.text(passageText + `\n<<link[[${o.value}|${o.nextPage}]]>><<set $${o.name} to "${o.value}">><</link>>`);
+                    }
+                }); 
 
                 // write back to HTML file 
                 var newFile = $.html() 
@@ -106,6 +139,30 @@ function addtoJSON(newOption) { // add a new passage to the JSON storage
           }
       });
       
+}
+
+function addVar(newVar) { // add a new variable option to the JSON storage 
+    fs.readFile(jsonFile, "utf8", (err, jsonString) => { // read the JSON file 
+        if (err) {
+          console.log("JSON file read failed:", err);
+          return;
+        }
+        try {
+            const options = JSON.parse(jsonString); // Parse the JSON file 
+            if(!options.vars.some(e => e.name == newVar.name)) options.vars.push(newVar); // Add the new variable option if it's not already there
+            const newFile = JSON.stringify(options); 
+            fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
+                if (err) {
+                    console.log('Error writing JSON file', err);
+                } else {
+                    console.log('Successfully wrote JSON file');
+                }
+                setupHTML(); // Update the HTML with the new passage
+            })
+          } catch (err) {
+            console.log("Error parsing JSON string:", err);
+          }
+      });
 }
 
 /*addtoJSON({

@@ -96,7 +96,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 		<div id="init-lacking"><p>Browser lacks capabilities required to play.</p><p>Upgrade or switch to another browser.</p></div>
 		<div id="init-loading"><div>Loading…</div></div>
 	</div>
-	<tw-storydata name="Test" startnode="1" creator="Twine" creator-version="2.5.1" format="SugarCube" format-version="2.36.1" ifid="33D2825C-A904-4BF7-8AAB-F59294A6FB20" options="" tags="" zoom="1" hidden=""><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css"></style><script role="script" id="twine-user-script" type="text/twine-javascript">setup.newPassage = function(title, text, before, after) { 
+	<tw-storydata name="Test" startnode="7" creator="Twine" creator-version="2.5.1" format="SugarCube" format-version="2.36.1" ifid="33D2825C-A904-4BF7-8AAB-F59294A6FB20" options="" tags="" zoom="1" hidden=""><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css"></style><script role="script" id="twine-user-script" type="text/twine-javascript">setup.newPassage = function(title, text, before, after) { 
   fetch("http://localhost:3000/newOption", {
       method: "POST",
       headers: {'Content-Type': 'application/json'}, 
@@ -109,7 +109,25 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
     }).then(res => {
       console.log("Request complete! response:", res);
     });
-}; </script><tw-passagedata pid="1" name="Beginning of the Story" tags="" position="800,325" size="100,100">Once upon a time there was a fox named Howard. He woke up in the morning and decided to...  
+}; 
+
+setup.newVar = function(name, value, pageSet, nextPage) { 
+  console.log(name)
+  console.log(value) 
+  console.log(pageSet) 
+  fetch("http://localhost:3000/newVar", {
+      method: "POST",
+      headers: {'Content-Type': 'application/json'}, 
+      body: JSON.stringify({
+          "name": name,  
+          "value": value, 
+          "pageSet": pageSet, 
+          "nextPage": nextPage
+      })
+    }).then(res => {
+      console.log("Request complete! response:", res);
+    });
+}; </script><tw-passagedata pid="1" name="Beginning of the Story" tags="" position="1350,300" size="100,100">Once upon a time there was a fox named Howard. He woke up in the morning and decided to...  
 
 &lt;&lt;textbox "$title" "Enter new option title"&gt;&gt; 
 &lt;&lt;textbox "$new" "Enter new option description"&gt;&gt;
@@ -117,16 +135,30 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 
 [[find some grapes|Grape Hunting]] 
 [[cause mischeif|Mischeif]]  
-[[explore the forest]]
-</tw-passagedata><tw-passagedata pid="2" name="text" tags="" position="75,50" size="100,100">yay $name
 
-Need to find if there is a way to create a passage from js. SQL injection kind of works, but the passage is not found. Worst case scenario may have to edit the source file with js.</tw-passagedata><tw-passagedata pid="3" name="User Option" tags="" position="625,450" size="100,100">$new
+[[explore the forest]]
+[[explore the desert]]
+</tw-passagedata><tw-passagedata pid="2" name="text" tags="" position="925,475" size="100,100">yay $name
+
+Need to find if there is a way to create a passage from js. SQL injection kind of works, but the passage is not found. Worst case scenario may have to edit the source file with js.
+
+&lt;&lt;textbox "$xyzvar" "Enter new option title"&gt;&gt; 
+&lt;&lt;button [[Submit|User Option]]&gt;&gt;&lt;&lt;/button&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="User Option" tags="" position="1225,475" size="100,100">$new
 [[Next|End of the Story]]
 
 &lt;&lt;= setup.newPassage(State.variables.title, State.variables.new, "Beginning of the Story", "End of the Story")&gt;&gt;
-</tw-passagedata><tw-passagedata pid="4" name="Grape Hunting" tags="" position="925,450" size="100,100">Howard found some grapes. Yum! (not really, he doesn't like grapes)  
-[[Next|End of the Story]] </tw-passagedata><tw-passagedata pid="5" name="Mischeif" tags="" position="775,450" size="100,100">Howard chased all the farmer's chickens around and had lots of fun. 
-[[Next|End of the Story]] </tw-passagedata><tw-passagedata pid="6" name="End of the Story" tags="" position="750,600" size="100,100">Howard had a good day. The end. </tw-passagedata><tw-passagedata pid="7" name="explore the forest" tags="custom" position="775,450" size="100,100">Howard runs around the forest all day
+</tw-passagedata><tw-passagedata pid="4" name="Grape Hunting" tags="" position="1525,475" size="100,100">Howard found some grapes. Yum! (not really, he doesn't like grapes)  
+[[Next|End of the Story]] </tw-passagedata><tw-passagedata pid="5" name="Mischeif" tags="" position="1375,475" size="100,100">Howard chased all the farmer's chickens around and had lots of fun. 
+[[Next|End of the Story]] </tw-passagedata><tw-passagedata pid="6" name="End of the Story" tags="" position="1350,625" size="100,100">Howard had a good day. The end. </tw-passagedata><tw-passagedata pid="7" name="Intro" tags="" position="500,150" size="100,100">What is the time period? 
+
+&lt;&lt;textbox "$timePeriod" "Enter new time period"&gt;&gt;
+&lt;&lt;button [[Submit|Screen2Var]]&gt;&gt;&lt;&lt;= setup.newVar("timePeriod", State.variables.timePeriod, "Intro", "Screen2Var")&gt;&gt;&lt;&lt;/button&gt;&gt;
+
+&lt;&lt;link[[Once upon a time|Screen2Var]]&gt;&gt;&lt;&lt;set $timePeriod to "Once upon a time"&gt;&gt;&lt;&lt;/link&gt;&gt;
+
+&lt;&lt;link[[in the future|Screen2Var]]&gt;&gt;&lt;&lt;set $timePeriod to "in the future"&gt;&gt;&lt;&lt;/link&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="Screen2Var" tags="" position="500,275" size="100,100">$timePeriod, as all great stories begin, _____ lived in peace and prosperity.</tw-passagedata><tw-passagedata pid="9" name="explore the forest" tags="custom" position="775,450" size="100,100">Howard runs around the forest all day
+
+ [[Next|End of the Story]] </tw-passagedata><tw-passagedata pid="10" name="explore the desert" tags="custom" position="775,450" size="100,100">Howard explores the desert and gets a lot of sand in his feet
 
  [[Next|End of the Story]] </tw-passagedata></tw-storydata>
 	<script id="script-sugarcube" type="text/javascript">

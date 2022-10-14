@@ -1,1 +1,1 @@
-{"data":[{"title":"explore the forest","text":"Howard runs around the forest all day","before":"Beginning of the Story","after":"End of the Story"}]}
+{"vars":[{"name":"timePeriod","value":"in the future","pageSet":"Intro","nextPage":"Screen2Var"}],"data":[{"title":"explore the forest","text":"Howard runs around the forest all day","before":"Beginning of the Story","after":"End of the Story"},{"title":"explore the desert","text":"Howard explores the desert and gets a lot of sand in his feet","before":"Beginning of the Story","after":"End of the Story"}]}

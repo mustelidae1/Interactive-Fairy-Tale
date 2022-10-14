@@ -149,7 +149,7 @@ function addVar(newVar) { // add a new variable option to the JSON storage
         }
         try {
             const options = JSON.parse(jsonString); // Parse the JSON file 
-            if(!options.vars.some(e => e.name == newVar.name)) options.vars.push(newVar); // Add the new variable option if it's not already there
+            if(!options.vars.some(e => e.value == newVar.value)) options.vars.push(newVar); // Add the new variable option if it's not already there
             const newFile = JSON.stringify(options); 
             fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
                 if (err) {

@@ -1,0 +1,42 @@
+body {
+    min-height: 100vh;
+    background-color: #f0eeec;
+    background-image: url('ending-m.png'), url('parchmentbg.jpg');
+    background-size: 100%, 600px;
+    background-position: center bottom, left top;
+    background-repeat: no-repeat, repeat;
+    background-attachment: fixed, fixed;
+    -webkit-transition: background-image .4s ease-in;
+    -o-transition: background-image .4s ease-in;
+    transition: background-image .4s ease-in;
+    padding-bottom: 200px;
+}
+
+@media screen
+    and (min-width: 800px) {
+
+        body {
+            min-height: 100vh;
+            background-image: url('ending-l.png'), url('ending-r.png'), url('parchmentbg.jpg');
+            background-size: auto 100%, auto 100%, 600px;
+            background-position: left -100px top, right -100px top, left top;
+            background-repeat: no-repeat, no-repeat, repeat;
+            background-attachment: fixed, fixed;
+            padding-bottom: 0;
+        }
+
+}
+
+@media screen
+    and (min-width: 1100px) {
+
+        body {
+            min-height: 100vh;
+            background-image: url('ending-l.png'), url('ending-r.png'), url('parchmentbg.jpg');
+            background-size: auto 100%, auto 100%, 600px;
+            background-position: left top, right top, left top;
+            background-repeat: no-repeat, no-repeat, repeat;
+            background-attachment: fixed, fixed;
+        }
+
+}

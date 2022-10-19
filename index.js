@@ -2,6 +2,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const express = require('express');
 const cheerio = require("cheerio");
+const htmlParser = require("node-html-parser"); 
 const { allowedNodeEnvironmentFlags } = require("process");
 
 const app = express(); // Set up web server 
@@ -50,12 +51,20 @@ app.post('/newVar', (req, res) => { // Add a new variable option to the story
     res.end(); 
 })
 
+app.post('/switchCss', (req, res) => { // Switch the css background 
+    console.log("Switching background: ", req.body); 
+
+    var cssName = req.body.name; 
+
+    switchCSS(cssName); 
+}); 
+
 app.listen(port,() => { // Start the web server 
     console.log(`App running on port ${port}`);
 })
 
 // Helper Functions -------------------------------------------
-function setupHTML() { // Add passages from the JSON storage to the HTML so they will be displayed in the Twine 
+function setupHTML() { // Add variables from the JSON storage to the HTML so they will be displayed in the Twine 
     fs.readFile(jsonFile, "utf8", (err, jsonString) => { 
         if (err) {
           console.log("JSON file read failed:", err);
@@ -63,45 +72,33 @@ function setupHTML() { // Add passages from the JSON storage to the HTML so they
         }
         try {
             const parsedJSON = JSON.parse(jsonString); 
-            const newOptions = parsedJSON.data; // Get the stored passages from the JSON object 
             const varOptions = parsedJSON.vars; // Get the stored vars from the JSON object 
 
-            fs.readFile(htmlFile, function(err, data) { // Read the HTML file 
-                const $ = cheerio.load(data); 
-                passages = $("tw-passagedata"); // Find existing passages  
-                storyData = $("tw-storydata");  // Find the top-level node that all the passages are children of 
-                numPassages = passages.length; // Get the number of passages 
-
-                newOptions.forEach(o => {
-                    //check if the passage is already in the HTML 
-                    if ($(`tw-passagedata[name="${o.title}"]`).length == 0) {
-                        // Add the passage to the HTML 
-                        var str = `<tw-passagedata pid="${++numPassages}" name="${o.title}" tags="custom" position="775,450" size="100,100">${o.text}\n\n [[Next|${o.after}]] </tw-passagedata>`; 
-                        storyData.append(str); 
-
-                        // Add a link to the new passage in the previous passage 
-                        prevPassage = $(`tw-passagedata[name="${o.before}"]`); 
-                        prevPassageText = prevPassage.text(); 
-                        prevPassage.text(prevPassageText + `[[${o.title}]]\n`);
-                    }
-                })
+            fs.readFile(htmlFile, 'utf8', function(err, data) { // Read the HTML file 
+                const root = htmlParser.parse(data); 
+                passages = root.querySelector("tw-passagedata"); // Find existing passages  
 
                 // Add links for all of the user variables 
                 // for each variable, find the page where that variable is an option and then add a link 
                 varOptions.forEach(o => {
                     //find the passage to add a link to 
-                    passage = $(`tw-passagedata[name="${o.pageSet}"]`); 
+                    passage = root.querySelector(`tw-passagedata[name="${o.pageSet}"]`); 
+                    if (passage) {
 
-                    // check if the option is already on the page
-                    passageText = passage.text();  
-                    if (!passageText.includes(o.value)) {
-                        passage.text(passageText + `\n<<link[[${o.value}|${o.nextPage}]]>><<set $${o.name} to "${o.value}">><</link>>`);
-                    }
+                        // check if the option is already on the page
+                        passageText = passage.innerText;  
+                        if (!passageText.includes(o.value)) {
+                            splitText = passageText.split("&lt;&lt;textbox"); 
+                            //passage.textContent = passageText + `\n&lt;&lt;link[[${o.value}|${o.nextPage}]]&gt;&gt;&lt;&lt;set $${o.name} to "${o.value}"&gt;&gt;&lt;&lt;/link&gt;&gt;`;
+                            passage.textContent = splitText[0].trim() + `&nbsp&lt;&lt;link[[${o.value}|${o.nextPage}]]&gt;&gt;&lt;&lt;set $${o.name} to "${o.value}"&gt;&gt;&lt;&lt;/link&gt;&gt;&nbsp` + "&lt;&lt;textbox" + splitText[1];
+                        }
+
+                    } 
                 }); 
 
                 // write back to HTML file 
-                var newFile = $.html() 
-                fs.writeFile(htmlFile, newFile, err => {
+                var newFile = root.outerHTML;  
+                fs.writeFile(htmlFile, newFile, 'utf8', err => {
                     if (err) {
                         console.log('Error writing HTML file', err);
                     } else {
@@ -114,6 +111,49 @@ function setupHTML() { // Add passages from the JSON storage to the HTML so they
             console.log("Error parsing JSON string:", err);
           }
       });
+}
+
+function switchCSSOld(name) {
+    fs.readFile(htmlFile, 'utf8', function(err, data) { // Read the HTML file 
+        const $ = cheerio.load(data); 
+
+        $('link[rel="stylesheet"]').last().attr("href", name + ".css"); // change where the css link points to 
+
+        // write back to HTML file 
+        var newFile = $.html() 
+        console.log("CSS: " + newFile.length);
+        if (newFile.length <= 100) return;
+        fs.writeFile(htmlFile, newFile, 'utf8', err => {
+            if (err) {
+                console.log('Error writing HTML file', err);
+            } else {
+                console.log('Successfully wrote HTML file');
+            }
+        }); 
+    });
+}
+
+function switchCSS(name) {
+    fs.readFile(htmlFile, 'utf8', function(err, data) { // Read the HTML file 
+        const root = htmlParser.parse(data); 
+
+        var head = root.querySelector("head"); 
+        head.appendChild(`<link rel="stylesheet" href="${name}.css">`)
+        //var links = root.querySelectorAll("link"); 
+        //links[links.length-1].insertAdjacentHTML("afterend", `<link rel="stylesheet" href="${name}.css">`); 
+        
+        //.setAttribute("href", name + ".css"); // change where the css link points to 
+
+        // write back to HTML file 
+        var newFile = root.outerHTML;  
+        fs.writeFile(htmlFile, newFile, 'utf8', err => {
+            if (err) {
+                console.log('Error writing HTML file', err);
+            } else {
+                console.log('Successfully wrote HTML file');
+            }
+        }); 
+    });
 }
 
 function addtoJSON(newOption) { // add a new passage to the JSON storage 
@@ -150,6 +190,7 @@ function addVar(newVar) { // add a new variable option to the JSON storage
         try {
             const options = JSON.parse(jsonString); // Parse the JSON file 
             if(!options.vars.some(e => e.value == newVar.value)) options.vars.push(newVar); // Add the new variable option if it's not already there
+            if(newVar.value == "Enter new option" || newVar.value == "Enter new time period") return; // Don't accept the default value 
             const newFile = JSON.stringify(options); 
             fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
                 if (err) {
@@ -157,7 +198,7 @@ function addVar(newVar) { // add a new variable option to the JSON storage
                 } else {
                     console.log('Successfully wrote JSON file');
                 }
-                setupHTML(); // Update the HTML with the new passage
+                setupHTML(); // Update the HTML with the new variable
             })
           } catch (err) {
             console.log("Error parsing JSON string:", err);
@@ -165,10 +206,5 @@ function addVar(newVar) { // add a new variable option to the JSON storage
       });
 }
 
-/*addtoJSON({
-    "title": "Test",  
-    "text": "test", 
-    "before": "Beginning of the Story", 
-    "after": "End of the Story"  
-})*/
 setupHTML(); 
+//switchCSS("magic"); 

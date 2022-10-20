@@ -80,7 +80,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
   <tw-storydata name="Interactive Fairy Tale" startnode="1" creator="Twine" creator-version="2.5.1" format="SugarCube" format-version="2.36.1" ifid="33D2825C-A904-4BF7-8AAB-F59294A6FB20" options="" tags="" zoom="1" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css"></style><script role="script" id="twine-user-script" type="text/twine-javascript">setup.newPassage = function(title, text, before, after) { 
-    fetch("http://35.93.142.129:3000/newOption", {
+    fetch("http://localhost:3000/newOption", {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({
@@ -98,7 +98,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
     console.log(name)
     console.log(value) 
     console.log(pageSet) 
-    fetch("http://35.93.142.129:3000/newVar", {
+    fetch("http://localhost:3000/newVar", {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({
@@ -112,7 +112,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
       });
   }; </script><tw-passagedata pid="1" name="1abc" tags="" position="500,150" size="100,100">Once upon a time in _____________
   
-  &lt;&lt;link[[Ancient Egypt|2abc]]&gt;&gt;&lt;&lt;set $timePeriod to &quot;Ancient Egypt&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;  &lt;&lt;link[[Ancient China|2abc]]&gt;&gt;&lt;&lt;set $timePeriod to &quot;Ancient China&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;  &lt;&lt;link[[recent times|2abc]]&gt;&gt;&lt;&lt;set $timePeriod to &quot;recent times&quot;&gt;&gt;&lt;&lt;/link&gt;&gt; 
+  &lt;&lt;link[[Ancient Egypt|2abc]]&gt;&gt;&lt;&lt;set $timePeriod to &quot;Ancient Egypt&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;  &lt;&lt;link[[Ancient China|2abc]]&gt;&gt;&lt;&lt;set $timePeriod to &quot;Ancient China&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;  &lt;&lt;link[[Recent times|2abc]]&gt;&gt;&lt;&lt;set $timePeriod to &quot;recent times&quot;&gt;&gt;&lt;&lt;/link&gt;&gt; 
   
   &lt;&lt;textbox &quot;$timePeriod&quot; &quot;Enter new time period&quot;&gt;&gt;
   &lt;&lt;button [[Submit|2abc]]&gt;&gt;&lt;&lt;= setup.newVar(&quot;timePeriod&quot;, State.variables.timePeriod, &quot;1abc&quot;, &quot;2abc&quot;)&gt;&gt;&lt;&lt;/button&gt;&gt;</tw-passagedata><tw-passagedata pid="2" name="2abc" tags="" position="500,275" size="100,100">Once upon a time in $timePeriod, there lived  _ who was extremely kind and gentle. 
@@ -154,7 +154,7 @@ Did $name already know the $magicalHelper?
   
   
   
-  &lt;&lt;set $branch1 to &quot;One day, word arrived that there was a $party and everyone was invited. Oh how $name wanted to go! But as everyone prepared to leave to the $party in their finest clothes, it became clear that $name had to stay at home. So $name went looking for the $magicalHelper $branch1end&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="8c" tags="" position="725,1025" size="100,100">$name was happy to see the $magicalHelper because $magicalHelperIntro. 
+  &lt;&lt;set $branch1 to &quot;One day, word arrived that there was a $party and everyone was invited. Oh how $name wanted to go! But as everyone prepared to leave to the $party in their finest clothes, it became clear that $name had to stay at home. So $name went looking for the $magicalHelper $branch1end&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="8c" tags="" position="725,1025" size="100,100">$name was happy to see the $magicalHelper because $name $magicalHelperIntro. 
   
   &lt;&lt;link[[Next|8.5c]]&gt;&gt;&lt;&lt;/link&gt;&gt;</tw-passagedata><tw-passagedata pid="13" name="9c" tags="" position="725,1300" size="100,100">One day, word arrived that there was a $party and everyone was invited. Oh how $name wanted to go! But as everyone prepared to leave to the $party in their finest clothes, it became clear that $name had to stay at home. So $name went looking for the $magicalHelper to make a wish. 
 
@@ -208,7 +208,7 @@ Did $name already know the $magicalHelper?
 Thanks to the $powerfulInfluence, $name&#39;s life was forever changed for the better.
   
   &lt;&lt;textbox &quot;$ending&quot; &quot;Write your own ending&quot;&gt;&gt;
-  &lt;&lt;button [[Submit|17abc]]&gt;&gt;&lt;&lt;= setup.newVar(&quot;ending&quot;, State.variables.ending, &quot;15abc&quot;, &quot;17abc&quot;)&gt;&gt;&lt;&lt;/button&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="17abc" tags="" position="550,2200" size="100,100">Full story: 
+  &lt;&lt;button [[Submit|17abc]]&gt;&gt;&lt;&lt;/button&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="17abc" tags="" position="550,2200" size="100,100">Full story: 
 
 Once upon a time in $timePeriod, there lived $name who was extremely kind and gentle. Our story begins when $name had to endure $tragicEvent. Afterwards, $name&#39;s life got even harder due to meeting $meanInfluence. $name was forced to do menial tasks all day long, while being taunted by $meanInfluence. The only one who cared about $name was a $magicalHelper. $name was happy to see the $magicalHelper because $name $magicalHelperIntro. 
   

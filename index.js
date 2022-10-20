@@ -6,7 +6,7 @@ const htmlParser = require("node-html-parser");
 const { allowedNodeEnvironmentFlags } = require("process");
 
 const app = express(); // Set up web server 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const jsonFile = "./passages.json";
 const htmlFile = "./public/index.html";

@@ -4,6 +4,7 @@ const express = require('express');
 const cheerio = require("cheerio");
 const htmlParser = require("node-html-parser"); 
 const { allowedNodeEnvironmentFlags } = require("process");
+const { syncBuiltinESMExports } = require("module");
 
 const app = express(); // Set up web server 
 const port = 3000;
@@ -113,49 +114,6 @@ function setupHTML() { // Add variables from the JSON storage to the HTML so the
       });
 }
 
-function switchCSSOld(name) {
-    fs.readFile(htmlFile, 'utf8', function(err, data) { // Read the HTML file 
-        const $ = cheerio.load(data); 
-
-        $('link[rel="stylesheet"]').last().attr("href", name + ".css"); // change where the css link points to 
-
-        // write back to HTML file 
-        var newFile = $.html() 
-        console.log("CSS: " + newFile.length);
-        if (newFile.length <= 100) return;
-        fs.writeFile(htmlFile, newFile, 'utf8', err => {
-            if (err) {
-                console.log('Error writing HTML file', err);
-            } else {
-                console.log('Successfully wrote HTML file');
-            }
-        }); 
-    });
-}
-
-function switchCSS(name) {
-    fs.readFile(htmlFile, 'utf8', function(err, data) { // Read the HTML file 
-        const root = htmlParser.parse(data); 
-
-        var head = root.querySelector("head"); 
-        head.appendChild(`<link rel="stylesheet" href="${name}.css">`)
-        //var links = root.querySelectorAll("link"); 
-        //links[links.length-1].insertAdjacentHTML("afterend", `<link rel="stylesheet" href="${name}.css">`); 
-        
-        //.setAttribute("href", name + ".css"); // change where the css link points to 
-
-        // write back to HTML file 
-        var newFile = root.outerHTML;  
-        fs.writeFile(htmlFile, newFile, 'utf8', err => {
-            if (err) {
-                console.log('Error writing HTML file', err);
-            } else {
-                console.log('Successfully wrote HTML file');
-            }
-        }); 
-    });
-}
-
 function addtoJSON(newOption) { // add a new passage to the JSON storage 
     fs.readFile(jsonFile, "utf8", (err, jsonString) => { // read the JSON file 
         if (err) {
@@ -207,4 +165,3 @@ function addVar(newVar) { // add a new variable option to the JSON storage
 }
 
 setupHTML(); 
-//switchCSS("magic"); 

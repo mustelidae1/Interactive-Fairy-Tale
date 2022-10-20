@@ -99,7 +99,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 		<div id="init-loading"><div>Loading&hellip;</div></div>
 	</div>
 	<tw-storydata name="Interactive Fairy Tale" startnode="1" creator="Twine" creator-version="2.5.1" format="SugarCube" format-version="2.36.1" ifid="33D2825C-A904-4BF7-8AAB-F59294A6FB20" options="" tags="" zoom="1" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css"></style><script role="script" id="twine-user-script" type="text/twine-javascript">setup.newPassage = function(title, text, before, after) { 
-    fetch("http://localhost:3000/newOption", {
+    fetch("http://35.93.142.129:3000/newOption", {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({
@@ -117,7 +117,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
     console.log(name)
     console.log(value) 
     console.log(pageSet) 
-    fetch("http://localhost:3000/newVar", {
+    fetch("http://35.93.142.129:3000/newVar", {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify({

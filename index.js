@@ -52,6 +52,20 @@ app.post('/newVar', (req, res) => { // Add a new variable option to the story
     res.end(); 
 })
 
+app.post('/newReflection', (req, res) => { // Add a new variable option to the story 
+    console.log("Adding new reflection: ", req.body) 
+
+    var newVar = {
+        "type": req.body.type, 
+        "text": req.body.text, 
+        "location": req.body.location 
+    }
+
+    addReflection(newVar); 
+
+    res.end(); 
+})
+
 app.post('/switchCss', (req, res) => { // Switch the css background 
     console.log("Switching background: ", req.body); 
 
@@ -74,10 +88,26 @@ function setupHTML() { // Add variables from the JSON storage to the HTML so the
         try {
             const parsedJSON = JSON.parse(jsonString); 
             const varOptions = parsedJSON.vars; // Get the stored vars from the JSON object 
+            const reflectionOptions = parsedJSON.reflections; // Get the reflections from the JSON object 
 
             fs.readFile(htmlFile, 'utf8', function(err, data) { // Read the HTML file 
+                var madeChange = false; 
                 const root = htmlParser.parse(data); 
                 passages = root.querySelector("tw-passagedata"); // Find existing passages  
+
+                
+                reflectionOptions.forEach(o => {
+                    //find the passage to add a link to 
+                    passage = root.querySelector(`tw-passagedata[name="${o.location}"]`); 
+                    if (passage) {
+                        // check if the option is already on the page
+                        passageText = passage.innerText;  
+                        if (!passageText.includes(o.text)) {
+                            madeChange = true; 
+                            passage.textContent = passageText + "<br>" + o.text; 
+                        }
+                    } 
+                });
 
                 // Add links for all of the user variables 
                 // for each variable, find the page where that variable is an option and then add a link 
@@ -85,10 +115,10 @@ function setupHTML() { // Add variables from the JSON storage to the HTML so the
                     //find the passage to add a link to 
                     passage = root.querySelector(`tw-passagedata[name="${o.pageSet}"]`); 
                     if (passage) {
-
                         // check if the option is already on the page
                         passageText = passage.innerText;  
                         if (!passageText.includes(o.value)) {
+                            madeChange = true; 
                             splitText = passageText.split("&lt;&lt;textbox"); 
                             //passage.textContent = passageText + `\n&lt;&lt;link[[${o.value}|${o.nextPage}]]&gt;&gt;&lt;&lt;set $${o.name} to "${o.value}"&gt;&gt;&lt;&lt;/link&gt;&gt;`;
                             passage.textContent = splitText[0].trim() + `&nbsp&lt;&lt;link[[${o.value}|${o.nextPage}]]&gt;&gt;&lt;&lt;set $${o.name} to "${o.value}"&gt;&gt;&lt;&lt;/link&gt;&gt;&nbsp` + "&lt;&lt;textbox" + splitText[1];
@@ -97,15 +127,18 @@ function setupHTML() { // Add variables from the JSON storage to the HTML so the
                     } 
                 }); 
 
-                // write back to HTML file 
-                var newFile = root.outerHTML;  
-                fs.writeFile(htmlFile, newFile, 'utf8', err => {
-                    if (err) {
-                        console.log('Error writing HTML file', err);
-                    } else {
-                        console.log('Successfully wrote HTML file');
-                    }
-                }); 
+                if (madeChange) {
+                   // write back to HTML file 
+                    var newFile = root.outerHTML;  
+                    fs.writeFile(htmlFile, newFile, 'utf8', err => {
+                        if (err) {
+                            console.log('Error writing HTML file', err);
+                        } else {
+                            console.log('Successfully wrote HTML file');
+                        }
+                    });  
+                }
+                
             });
 
           } catch (err) {
@@ -130,7 +163,6 @@ function addtoJSON(newOption) { // add a new passage to the JSON storage
                 } else {
                     console.log('Successfully wrote JSON file');
                 }
-                setupHTML(); // Update the HTML with the new passage
             })
           } catch (err) {
             console.log("Error parsing JSON string:", err);
@@ -148,7 +180,7 @@ function addVar(newVar) { // add a new variable option to the JSON storage
         try {
             const options = JSON.parse(jsonString); // Parse the JSON file 
             if(!options.vars.some(e => e.value == newVar.value)) options.vars.push(newVar); // Add the new variable option if it's not already there
-            if(newVar.value == "Enter new option" || newVar.value == "Enter new time period" || newVar.value == "Enter new name") return; // Don't accept the default value 
+            if(newVar.value.toLowerCase() == "enter new option" || newVar.value.toLowerCase() == "enter new time period" || newVar.value.toLowerCase() == "enter new name" || newVar.value.toLowerCase() == "enter answer") return; // Don't accept the default value 
             const newFile = JSON.stringify(options); 
             fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
                 if (err) {
@@ -157,6 +189,30 @@ function addVar(newVar) { // add a new variable option to the JSON storage
                     console.log('Successfully wrote JSON file');
                 }
                 setupHTML(); // Update the HTML with the new variable
+            })
+          } catch (err) {
+            console.log("Error parsing JSON string:", err);
+          }
+      });
+}
+
+function addReflection(newVar) { // add a new reflection to the JSON storage 
+    fs.readFile(jsonFile, "utf8", (err, jsonString) => { // read the JSON file 
+        if (err) {
+          console.log("JSON file read failed:", err);
+          return;
+        }
+        try {
+            const options = JSON.parse(jsonString); // Parse the JSON file 
+            if(!options.reflections.some(e => e.text == newVar.text)) options.reflections.push(newVar); // Add the new variable option if it's not already there
+            if(newVar.value.toLowerCase() == "enter new option" || newVar.value.toLowerCase() == "enter new time period" || newVar.value.toLowerCase() == "enter new name" || newVar.value.toLowerCase() == "enter answer") return; // Don't accept the default value 
+            const newFile = JSON.stringify(options); 
+            fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
+                if (err) {
+                    console.log('Error writing JSON file', err);
+                } else {
+                    console.log('Successfully wrote JSON file');
+                }
             })
           } catch (err) {
             console.log("Error parsing JSON string:", err);

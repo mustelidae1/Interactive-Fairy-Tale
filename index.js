@@ -104,7 +104,7 @@ function setupHTML() { // Add variables from the JSON storage to the HTML so the
                         passageText = passage.innerText;  
                         if (!passageText.includes(o.text)) {
                             madeChange = true; 
-                            passage.textContent = passageText + "&lt;&lt;br&gt;&gt;" + o.text; 
+                            passage.textContent = passageText + "&lt;&lt;br&gt;&gt;" + "&lt;&lt;br&gt;&gt;" + o.text; 
                         }
                     } 
                 });

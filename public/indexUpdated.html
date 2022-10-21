@@ -300,9 +300,11 @@ What do you think is the moral lesson of your story?
 &lt;&lt;textbox &quot;$reflection&quot; &quot;Enter answer&quot;&gt;&gt;
   &lt;&lt;button [[Submit|credits]]&gt;&gt;&lt;&lt;= setup.newReflection(&quot;ref&quot;, State.variables.reflection, &quot;reflection&quot;)&gt;&gt;&lt;&lt;/button&gt;&gt;
   
-  [[Next|credits]]
-  
-  &lt;&lt;silently&gt;&gt;&lt;&lt;= setup.changeCSS(&quot;ending&quot;)&gt;&gt;&lt;&lt;endsilently&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="reflection" tags="" position="475,2500" size="100,100">All reflections:</tw-passagedata><tw-passagedata pid="26" name="credits" tags="" position="550,2350" size="100,100">You have just taken part in an interactive simulation of oral tradition in storytelling. You have created your own story within a preselected framework based on a tale with many names, perhaps most famously known as Cinderella (ATU510a). You can now read your story to yourself or anyone willing to listen. You can also use a text-to-speech tool, such as Natural Readers.  
+  &lt;&lt;silently&gt;&gt;&lt;&lt;= setup.changeCSS(&quot;ending&quot;)&gt;&gt;&lt;&lt;endsilently&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="reflection" tags="" position="475,2500" size="100,100">All reflections:
+
+$reflection
+
+</tw-passagedata><tw-passagedata pid="26" name="credits" tags="" position="550,2350" size="100,100">You have just taken part in an interactive simulation of oral tradition in storytelling. You have created your own story within a preselected framework based on a tale with many names, perhaps most famously known as Cinderella (ATU510a). You can now read your story to yourself or anyone willing to listen. You can also use a text-to-speech tool, such as Natural Readers.  
 
 We, the creators of this platform, envision the experience you&#39;ve just had as the future of oral storytelling. In brief, we think the future of oral storytelling will entail interactive experiences, similar plots with changing variables, and an awareness of multiple variations existing at the same time. 
 
@@ -362,6 +364,8 @@ Did $name find the $magicalHelper?
   &lt;&lt;link[[Yes|9a]]&gt;&gt;&lt;&lt;set $branch1end to &quot;and sang a sad little song&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;    &lt;&lt;link[[No|9b]]&gt;&gt;&lt;&lt;set $branch1end to &quot;but found only bones&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
   
   &lt;&lt;silently&gt;&gt;&lt;&lt;= setup.changeCSS(&quot;party&quot;)&gt;&gt;&lt;&lt;endsilently&gt;&gt;</tw-passagedata><tw-passagedata pid="33" name="endings" tags="" position="625,2500" size="100,100">All endings:
+
+$ending
 
 </tw-passagedata></tw-storydata>
 	<script id="script-sugarcube" type="text/javascript">

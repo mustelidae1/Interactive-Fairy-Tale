@@ -205,7 +205,7 @@ function addReflection(newVar) { // add a new reflection to the JSON storage
         try {
             const options = JSON.parse(jsonString); // Parse the JSON file 
             if(!options.reflections.some(e => e.text == newVar.text)) options.reflections.push(newVar); // Add the new variable option if it's not already there
-            if(newVar.value.toLowerCase() == "enter new option" || newVar.value.toLowerCase() == "enter new time period" || newVar.value.toLowerCase() == "enter new name" || newVar.value.toLowerCase() == "enter answer") return; // Don't accept the default value 
+            if(newVar.text.toLowerCase() == "enter new option" || newVar.text.toLowerCase() == "enter new time period" || newVar.text.toLowerCase() == "enter new name" || newVar.text.toLowerCase() == "enter answer") return; // Don't accept the default value 
             const newFile = JSON.stringify(options); 
             fs.writeFile(jsonFile, newFile, err => { // Write the new data to the JSON file 
                 if (err) {

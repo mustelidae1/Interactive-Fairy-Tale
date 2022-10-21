@@ -3,7 +3,7 @@
 This choose your own adventure, built with Twine, mimics the evolution of traditional oral stories. Users can add their own branches to the story which are shared with everyone, creating an ever-expanding tale. This project includes a custom node.js server which extends the functionality of Twine to save user-added content for other users to see. 
 
 ## Web Link 
-[Click here to play](https://tinyurl.com/interactive-story)
+[Click here to play](https://tinyurl.com/interactive-story) (Edge or Safari recommended) 
 
 ## How to Run the Server
 1. Clone the repo 
@@ -34,6 +34,7 @@ Finally, the css stylesheets get switched out at each step of the story, layerin
 ## Known Issues 
 * There is currently not an easy way to delete user-added passages other than manually, and no moderation of what is added to the site
 * This is not a scalable solution - eventually we would want a proper database instead of using a local json file for storage 
+* There may be errors when playing the story with Google Chrome. We recommend Edge or Safari. 
 
 ## Credits 
 

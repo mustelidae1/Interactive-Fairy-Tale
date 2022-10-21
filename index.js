@@ -104,7 +104,7 @@ function setupHTML() { // Add variables from the JSON storage to the HTML so the
                         passageText = passage.innerText;  
                         if (!passageText.includes(o.text)) {
                             madeChange = true; 
-                            passage.textContent = passageText + "<br>" + o.text; 
+                            passage.textContent = passageText + "&lt;&lt;br&gt;&gt;" + o.text; 
                         }
                     } 
                 });
@@ -213,6 +213,7 @@ function addReflection(newVar) { // add a new reflection to the JSON storage
                 } else {
                     console.log('Successfully wrote JSON file');
                 }
+                setupHTML(); 
             })
           } catch (err) {
             console.log("Error parsing JSON string:", err);

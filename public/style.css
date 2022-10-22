@@ -217,6 +217,10 @@ input, select, textarea {
         z-index: 1000;
     } */
 
+.macro-textbox {
+    margin-top: 30px;
+}
+
 button.link-internal.macro-button {
     width: 100%;
     border: 1px solid #000;

@@ -39,7 +39,7 @@ Finally, the css stylesheets get switched out at each step of the story, layerin
 ## Credits 
 
 Behind this project are the following students from the EFI Narrative Futures programme: 
-Olivia Thomas, Jenny Zhang, James Mcrae, Alexandra Bruncrona, Sarah Noble  
+Olivia Thomas, Jenny Zhang, James Macrae, Alexandra Bruncrona, Sarah Noble  
 
 The three stories used in this project were inspired by: 
 * Rhodopis recounted by Strabo sometime around 7 BC and AD 23 
